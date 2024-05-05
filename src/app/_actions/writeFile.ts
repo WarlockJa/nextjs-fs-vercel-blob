@@ -1,13 +1,15 @@
 "use server";
-import fs from "fs/promises";
 import { File } from "buffer";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { put } from "@vercel/blob";
+import { latinAlphanumericalStartsWithLetter } from "@/lib/regex";
 
 const fileSchema = z.object({
   file: z
     .instanceof(File, { message: "Required" })
     .refine((file) => file.size > 0, "Required"),
+  folder: z.string().min(0).max(64).regex(latinAlphanumericalStartsWithLetter),
 });
 
 export async function writeFile(
@@ -20,12 +22,23 @@ export async function writeFile(
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
   }
+
+  // validated file from formData
   const file = result.data.file;
 
-  await fs.writeFile(
-    `${path}/${file.name}`,
-    Buffer.from(await file.arrayBuffer())
-  );
+  // constructing file path
+  const folder = result.data.folder ? result.data.folder.concat("/") : "";
+  const fullFilepath = path
+    ? path.concat(folder, file.name)
+    : folder.concat(file.name);
+
+  // console.log(path, folder, file.name, fullFilepath);
+  // writing to blob
+  const test = await put(fullFilepath, Buffer.from(await file.arrayBuffer()), {
+    access: "public",
+  });
+
+  // console.log(test);
 
   revalidatePath("/");
 }

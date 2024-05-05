@@ -1,7 +1,7 @@
 "use server";
-import fs from "fs/promises";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { put } from "@vercel/blob";
 
 // there is no regex for name validation because various environment have their own restrictions
 // if folder name is invalid generic error will be dispatched
@@ -22,7 +22,10 @@ export async function createFolder(
   const folder = result.data.folder;
 
   try {
-    await fs.mkdir(`${path}/${folder}`);
+    // await fs.mkdir(`${path}/${folder}`);
+    // await put(folder, undefined, {
+    //   access: "public"
+    // })
   } catch (error) {
     return { folder: "Error creating folder" };
   }

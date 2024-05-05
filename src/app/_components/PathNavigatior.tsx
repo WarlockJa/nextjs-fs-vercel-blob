@@ -12,17 +12,20 @@ import React from "react";
 export default function PathNavigator({ path }: { path: string }) {
   // generating path entries array
   const upHref =
-    path === "/"
-      ? [{ name: "/", href: "/" }]
+    path === ""
+      ? [{ name: "/", href: "" }]
       : path
           .split("/")
           .map((_, index, arr) =>
             index < arr.length - 1
               ? {
-                  name: arr[arr.length - index - 1],
-                  href: arr.slice(0, arr.length - index).join("/"),
+                  name: arr[arr.length - index - 2],
+                  href: arr
+                    .slice(0, arr.length - index - 1)
+                    .join("/")
+                    .concat("/"),
                 }
-              : { name: "/", href: "/" }
+              : { name: "/", href: "" }
           )
           .reverse();
 

@@ -1,6 +1,16 @@
 "use server";
-import fs from "fs/promises";
+import { del, list } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
+
+async function recursiveDeleteFolder(folderName: string) {
+  const entries = await list({ mode: "folded", prefix: folderName });
+
+  await Promise.all(entries.blobs.map(async (file) => del(file.downloadUrl)));
+
+  for (const subfolder of entries.folders) {
+    await recursiveDeleteFolder(subfolder);
+  }
+}
 
 export async function deleteFolder({
   name,
@@ -9,7 +19,8 @@ export async function deleteFolder({
   name: string;
   path: string;
 }) {
-  await fs.rm(`${path}/${name}`, { recursive: true, force: true });
+  // recursively deleting folder and its contents
+  await recursiveDeleteFolder(name);
 
   revalidatePath("/");
 }

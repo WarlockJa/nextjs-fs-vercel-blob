@@ -5,13 +5,7 @@ import { useTransition } from "react";
 import { deleteFile } from "../_actions/deleteFile";
 import { deleteFolder } from "../_actions/deleteFolder";
 
-export function DropdownDeleteFile({
-  name,
-  path,
-}: {
-  name: string;
-  path: string;
-}) {
+export function DropdownDeleteFile({ downloadUrl }: { downloadUrl: string }) {
   const [isPending, startTransition] = useTransition();
   return (
     <DropdownMenuItem
@@ -19,7 +13,7 @@ export function DropdownDeleteFile({
       disabled={isPending}
       onClick={() =>
         startTransition(async () => {
-          await deleteFile({ name, path });
+          await deleteFile({ downloadUrl });
         })
       }
     >

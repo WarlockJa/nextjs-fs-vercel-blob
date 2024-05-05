@@ -10,13 +10,11 @@ import Link from "next/link";
 import { DropdownDeleteFile } from "./FileMenuActions";
 
 export default function FileMenu({
-  name,
-  path,
-  size,
+  pathname,
+  downloadUrl,
 }: {
-  name: string;
-  path: string;
-  size: number;
+  pathname: string;
+  downloadUrl: string;
 }) {
   return (
     <DropdownMenu>
@@ -26,15 +24,12 @@ export default function FileMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem asChild>
-          <Link
-            download
-            href={`/download/?path=${path}&name=${name}&size=${size}`}
-          >
+          <Link download href={downloadUrl}>
             Download
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownDeleteFile name={name} path={path} />
+        <DropdownDeleteFile downloadUrl={downloadUrl} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
