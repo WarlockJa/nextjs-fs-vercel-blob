@@ -12,15 +12,14 @@ export default async function FileExplorer({ path }: { path: string }) {
   const entries = await list({ mode: "folded", prefix: path });
 
   // redirecting to root in case of an improper path
-  if (entries.folders.length === 0 && entries.blobs.length === 0) redirect("/");
+  if (entries.folders.length === 0 && entries.blobs.length === 0 && path !== "")
+    redirect("/");
 
   return (
     <div className="overflow-scroll h-full">
       <div className="flex justify-between items-center sticky top-0 bg-secondary">
         <PathNavigator path={path} />
         <div className="flex items-center">
-          {/* TODO Make add Folder to file name input */}
-          {/* <CreateFolder path={path} /> */}
           <UploadFile path={path} />
           <ThemeToggle />
         </div>
