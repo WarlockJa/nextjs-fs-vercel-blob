@@ -18,6 +18,7 @@ export async function writeFile(
   formData: FormData
 ) {
   // validating form data
+  console.log(Object.fromEntries(formData.entries()));
   const result = fileSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
